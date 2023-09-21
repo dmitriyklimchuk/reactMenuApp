@@ -2,8 +2,19 @@ import React, { useState } from "react";
 import Header from "./components/Layout/Header";
 import Meals from "./components/Meals/Meals";
 import Cart from "./components/Cart/Cart";
-import CartProvider from "./store/CartProvider";
+import CartContext from "./store/cart-context";
+
 function App() {
+    const addItemToCartHandler = item => {}
+
+    const removeItemFromCartHandler = item => {}
+
+    const cartContext = {
+        items: [],
+        totalAmount: 0,
+        addItem: addItemToCartHandler,
+        removeItem: removeItemFromCartHandler
+    }
     const [cartIsShown, setCartIsShown] = useState(false)
 
     const showCartHandler = () => {
@@ -15,13 +26,14 @@ function App() {
     };
 
     return (
-        <CartProvider>
+        <CartContext.Provider value={cartContext}>
             {cartIsShown && <Cart onClose={hideCartHandler}/>}
             <Header onShowCart={showCartHandler}/>
             <main>
+                {cartContext.totalAmount}
                 <Meals/>
             </main>
-        </CartProvider>
+        </CartContext.Provider>
     );
 }
 
