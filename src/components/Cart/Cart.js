@@ -22,7 +22,7 @@ const Cart = (props) => {
             key={item.id}
             name={item.name}
             price={item.price}
-            amont={item.amount}/>
+            amount={item.amount}/>
     ))
     return (
         <Modal onClose={props.onClose}>
