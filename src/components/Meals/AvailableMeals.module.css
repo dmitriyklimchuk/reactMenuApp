@@ -10,6 +10,11 @@
     margin: 0;
     padding: 0;
 }
+.meals h1 {
+    text-align: center;
+    color: white;
+    text-transform: uppercase;
+}
 
 @keyframes meals-appear {
     from {

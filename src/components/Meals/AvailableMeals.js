@@ -39,7 +39,8 @@ const DUMMY_MEALS = [
 const AvailableMeals = (props) => {
 
     const [meals, setMeals] = useState([])
-    const [isLoading, setIsLoading] = useState(true)
+    const [isLoading, setIsLoading] = useState(true);
+    const [httpError, setHttpError] = useState(false);
 
     useEffect(()=>{
         const fetchMovie = async ()=> {
@@ -66,7 +67,8 @@ const AvailableMeals = (props) => {
                 setMeals(mealsData);
                 setIsLoading(false)
             } catch (error) {
-                alert('Something went wrong!')
+                setIsLoading(false);
+                setHttpError(true)
                 setMeals(DUMMY_MEALS);
             }
         };
@@ -83,13 +85,16 @@ const AvailableMeals = (props) => {
     const mealsList = meals.map(meal => <MealItem id={meal.id} key={meal.id} price={meal.price} name={meal.name} description={meal.description}/>)
 
     return (
-        <section className={classes.meals}>
-            <ul>
-                <Card>
-                    {mealsList}
-                </Card>
-            </ul>
-        </section>
+        <React.Fragment>
+            <section className={classes.meals}>
+                {httpError && <h1>Something went wrong</h1>}
+                <ul>
+                    <Card>
+                        {mealsList}
+                    </Card>
+                </ul>
+            </section>
+        </React.Fragment>
     )
 
 }
