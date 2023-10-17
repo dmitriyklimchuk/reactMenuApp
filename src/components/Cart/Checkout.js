@@ -1,23 +1,53 @@
-import React from "react";
+import React, {useRef, useState} from "react";
 import classes from "./Checkout.module.scss";
 
+const isEmpty = (value) => value.trim() !== '';
+
 const Checkout = (props)=> {
+    const nameInputRef = useRef();
+    const streetInputRef = useRef();
+    const [isFormValid, setIsFormValid] = useState(true);
     const confirmHandler = (event)=> {
         event.preventDefault();
+
+        const enteredName = nameInputRef.current.value;
+        const enteredStreet = streetInputRef.current.value;
+        const enteredValues = [enteredName,enteredStreet];
+
+        const checkForm = enteredValues.every(value => isEmpty(value));
+        setIsFormValid(checkForm)
+
+        if (!isFormValid) {
+            return
+        }
+
+        props.onConfirm({
+            name: enteredName,
+            street: enteredStreet
+        });
+
+        nameInputRef.current.value = '';
+        streetInputRef.current.value = '';
+
     };
 
     return (
-        <form action="" onSubmit={confirmHandler}>
+        <form action="" className={classes.control} onSubmit={confirmHandler}>
             <div className={classes.control}>
                 <label htmlFor="name">Your Name</label>
-                <input type="text" id="name"/>
+                <input ref={nameInputRef} type="text" id="name"/>
             </div>
-            <div>
+            <div className={classes.control}>
                 <label htmlFor="street">Your Street</label>
-                <input type="text" id="street"/>
+                <input ref={streetInputRef} type="text" id="street"/>
             </div>
-            <button type="button" onClick={props.onCancel}>Cancel</button>
-            <button>Confirm</button>
+            <div className={classes.actions}>
+                <button type='button' onClick={props.onCancel}>
+                    Cancel
+                </button>
+                <button className={classes.submit}>Confirm</button>
+            </div>
+            {!isFormValid && <h1>Please fill all inputs correctly</h1>}
         </form>
     )
 };

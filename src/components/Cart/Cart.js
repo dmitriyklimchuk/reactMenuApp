@@ -11,6 +11,7 @@ const Cart = (props) => {
     const totalAmount = `$${cartCtx.totalAmount.toFixed(2)}`;
     const hasItems = cartCtx.items.length > 0;
     const [isCheckout, setIsCheckout] = useState(false);
+    const [isSubmitted, setIsSubmitted] = useState(false);
 
     const cartItemRemoveHandler = (id) => {
         cartCtx.removeItem(id)
@@ -23,6 +24,20 @@ const Cart = (props) => {
     const orderHandler = (event) => {
         event.preventDefault();
         setIsCheckout(true);
+        setIsSubmitted(false);
+    };
+
+    const submitOrderHandler = (userData) => {
+        fetch('https://reactfoodorderapp-847b4-default-rtdb.europe-west1.firebasedatabase.app/orders.json',{
+            method: 'POST',
+            body: JSON.stringify({
+                user: userData,
+                orderedItems: cartData
+            })
+        });
+
+        cartCtx.clearCart();
+        setIsSubmitted(true)
     };
 
     const modalActions = <div className={classes.actions}>
@@ -42,14 +57,14 @@ const Cart = (props) => {
     ))
     return (
         <Modal onClose={props.onClose}>
-            <ul className={classes['cart-items ']}>
+            <ul className={classes['cart-items']}>
                 {cartItems}
             </ul>
             <div className={classes.total}>
                 <span>Total Amount</span>
                 <span>{totalAmount}</span>
             </div>
-            {isCheckout && <Checkout onCancel={props.onClose}/>}
+            {isCheckout && !isSubmitted && <Checkout onConfirm={submitOrderHandler} onCancel={props.onClose}/>}
             {!isCheckout && modalActions}
         </Modal>
     )
